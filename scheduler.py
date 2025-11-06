@@ -17,9 +17,10 @@ async def send_message(bot, user_id, text):
 
 
 MSG_1 = """
-😻Привіт
+Привіт! 😻
 
-Це ЦЕНТР ПІДТРИМКИ БІЗНЕСУ українців в Болгарії 🇧🇬 🇺🇦.
+Це ЦЕНТР ПІДТРИМКИ БІЗНЕСУ українців в Болгарії 🇧🇬 🇺🇦
+
 Чи знайшов ти усі відповіді про бізнес в Болгарії у нашому посібнику?
 
 Якщо ні, то пиши нашому менеджеру: @Manager_Alla_Mi
@@ -28,7 +29,7 @@ MSG_1 = """
 """
 
 MSG_2 = """
-🔥Нагадуємо!
+Нагадуємо! 🔥
 
 ЦЕНТР ПІДТРИМКИ БІЗНЕСУ українців в Болгарії 🇧🇬 🇺🇦 має активні спільноти в <a href=\"https://www.instagram.com/biznesvsofij\">Instagram</a>, <a href=\"https://www.facebook.com/groups/576711572108058/\">Facebook</a> та <a href=\"https://www.linkedin.com/company/107202554/\">LinkedIn</a> де ти зможеш прорекламувати свій бізнес, знайти нові бізнесові знайомства, приєднатись до нетворкінгу.
 
@@ -37,23 +38,23 @@ MSG_2 = """
 """
 
 MSG_3 = """
-🔥Нагадуємо! 
+Нагадуємо! 🔥
 
-Що до кінця року у ЦЕНТРУ ПІДТРИМКИ БІЗНЕСУ 
-українці 🇺🇦 в Болгарії 🇧🇬 діє неймовірна ціна на відкриття ООД або ДПК усього 250€!
+Що до кінця року у ЦЕНТРУ ПІДТРИМКИ БІЗНЕСУ українців в Болгарії 🇺🇦 🇧🇬 діє неймовірна ціна на відкриття ООД або ДПК усього 250€!
 
 Замовити послугу можна у менеджера: @Manager_Alla_Mi
 
 <a href=\"https://www.instagram.com/biznesvsofij\">Instagram</a> | <a href=\"https://www.facebook.com/groups/576711572108058/\">Facebook</a> | <a href=\"https://www.linkedin.com/company/107202554/\">LinkedIn</a>
 """
 
-MSG_3 = """
-🔥Нагадуємо! 
+MSG_4 = """
+Привіт! 😻
 
-Що до кінця року у ЦЕНТРУ ПІДТРИМКИ БІЗНЕСУ 
-українці 🇺🇦 в Болгарії 🇧🇬 діє неймовірна ціна на відкриття ООД або ДПК усього 250€!
+Це ЦЕНТР ПІДТРИМКИ БІЗНЕСУ українців в Болгарії 🇧🇬🇺🇦 
 
-Замовити послугу можна у менеджера: @Manager_Alla_Mi
+У тебе є неймовірна можливіть записатись на безкоштовну консультацію з питань бізнесу в Болгарії 🔥
+
+Швиденько пиши нашому менеджеру: @Manager_Alla_Mi
 
 <a href=\"https://www.instagram.com/biznesvsofij\">Instagram</a> | <a href=\"https://www.facebook.com/groups/576711572108058/\">Facebook</a> | <a href=\"https://www.linkedin.com/company/107202554/\">LinkedIn</a>
 """
@@ -82,13 +83,14 @@ async def schedule_messages(bot):
                 r1 = row["reminder1_sent"] if isinstance(row, dict) else row[3]
                 r2 = row["reminder2_sent"] if isinstance(row, dict) else row[4]
                 r3 = row["reminder3_sent"] if isinstance(row, dict) else row[5]
+                r4 = row["reminder4_sent"] if isinstance(row, dict) else row[6]
 
                 try:
                     base = _parse_joined_at(joined_at) if isinstance(joined_at, str) else joined_at
                 except Exception:
                     continue
 
-                # Due times: +1 minute, +8 days, +15 days from joined_at
+                # Due times (test timings): +30s, +40s, +50s, +70s from joined_at
                 if not r1 and now >= base + timedelta(seconds=30):
                     await send_message(bot, user_id, MSG_1)
                     await mark_reminder_sent(user_id, 1)
@@ -102,6 +104,11 @@ async def schedule_messages(bot):
                 if r2 and not r3 and now >= base + timedelta(seconds=50):
                     await send_message(bot, user_id, MSG_3)
                     await mark_reminder_sent(user_id, 3)
+                    continue
+
+                if r3 and not r4 and now >= base + timedelta(seconds=70):
+                    await send_message(bot, user_id, MSG_4)
+                    await mark_reminder_sent(user_id, 4)
                     continue
         except Exception:
             # silent cycle; optionally log
