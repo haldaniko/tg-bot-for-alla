@@ -73,7 +73,7 @@ def _parse_joined_at(value: str) -> datetime:
 
 
 async def schedule_messages(bot):
-    CHECK_INTERVAL = 10  # check every 10 seconds to catch 1-minute window
+    CHECK_INTERVAL = 3600 * 12
     while True:
         try:
             users = await get_all_users()
@@ -92,22 +92,22 @@ async def schedule_messages(bot):
                     continue
 
                 # Due times (test timings): +30s, +40s, +50s, +70s from joined_at
-                if not r1 and now >= base + timedelta(seconds=30):
+                if not r1 and now >= base + timedelta(days=1):
                     await send_message(bot, user_id, MSG_1)
                     await mark_reminder_sent(user_id, 1)
                     continue  # one step per pass per user
 
-                if r1 and not r2 and now >= base + timedelta(seconds=40):
+                if r1 and not r2 and now >= base + timedelta(days=2):
                     await send_message(bot, user_id, MSG_2)
                     await mark_reminder_sent(user_id, 2)
                     continue
 
-                if r2 and not r3 and now >= base + timedelta(seconds=50):
+                if r2 and not r3 and now >= base + timedelta(weeks=1):
                     await send_message(bot, user_id, MSG_3)
                     await mark_reminder_sent(user_id, 3)
                     continue
 
-                if r3 and not r4 and now >= base + timedelta(seconds=70):
+                if r3 and not r4 and now >= base + timedelta(weeks=2):
                     await send_message(bot, user_id, MSG_4)
                     await mark_reminder_sent(user_id, 4)
                     continue
